@@ -3,6 +3,7 @@
     version = 1,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
     abstract fun categoryDao(): CategoryDao
@@ -18,10 +19,19 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "expense_database"
-                ).build()
+                ).fallbackToDestructiveMigration()
+                 .build()
                 INSTANCE = instance
                 instance
             }
         }
     }
+}
+
+class Converters {
+    @TypeConverter
+    fun fromTimestamp(value: Long?): Date? = value?.let { Date(it) }
+
+    @TypeConverter
+    fun dateToTimestamp(date: Date?): Long? = date?.time
 }

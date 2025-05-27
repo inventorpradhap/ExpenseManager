@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.expensemanager">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Optional: If you want to add backup functionality -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ExpenseManager"
+        tools:targetApi="31">
+
+        <!-- Main Activity -->
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.ExpenseManager.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Auth Activity -->
+        <activity
+            android:name=".ui.auth.AuthActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.ExpenseManager.NoActionBar" />
+
+        <!-- Add Transaction Activity -->
+        <activity
+            android:name=".ui.transactions.AddEditTransactionActivity"
+            android:exported="false"
+            android:label="@string/title_add_transaction"
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/Theme.ExpenseManager.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+
+        <!-- Reports Activity -->
+        <activity
+            android:name=".ui.reports.ReportsActivity"
+            android:exported="false"
+            android:label="@string/title_reports"
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/Theme.ExpenseManager.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+
+        <!-- Settings Activity -->
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:exported="false"
+            android:label="@string/title_settings"
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/Theme.ExpenseManager.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+
+        <!-- Services -->
+        <service
+            android:name=".service.NotificationService"
+            android:exported="false" />
+
+        <!-- Firebase Services -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/primary" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
+        <!-- Backup Rules -->
+        <meta-data
+            android:name="com.google.android.backup.api_key"
+            android:value="YOUR_BACKUP_KEY" />
+
+    </application>
+
+</manifest>
