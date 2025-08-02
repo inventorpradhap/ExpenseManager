@@ -19,7 +19,6 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     private List<Expense> expenseList;
     private OnItemClickListener listener;
 
-    // Constructor
     public ExpenseAdapter(List<Expense> expenseList, OnItemClickListener listener) {
         this.expenseList = expenseList;
         this.listener = listener;
@@ -38,12 +37,10 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
         holder.txtCategory.setText(expense.category);
         holder.txtAmount.setText("₹" + expense.amount);
 
-        // Click listener for item
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onItemClick(expense);
         });
 
-        // Long click listener for delete
         holder.itemView.setOnLongClickListener(v -> {
             if (listener != null) listener.onDeleteClick(expense);
             return true;
@@ -55,13 +52,11 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
         return expenseList.size();
     }
 
-    // Method to update list (for filtering)
     public void updateList(List<Expense> filteredList) {
         this.expenseList = filteredList;
         notifyDataSetChanged();
     }
 
-    // ViewHolder class
     static class ExpenseViewHolder extends RecyclerView.ViewHolder {
         TextView txtTitle, txtCategory, txtAmount;
 
