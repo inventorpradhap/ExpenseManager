@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class AddExpenseActivity extends AppCompatActivity {
     private EditText edtTitle, edtCategory, edtAmount;
     private ExpenseDatabaseHelper dbHelper;
+    private int expenseId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,13 +22,23 @@ public class AddExpenseActivity extends AppCompatActivity {
         edtAmount = findViewById(R.id.edtAmount);
         dbHelper = new ExpenseDatabaseHelper(this);
 
+        expenseId = getIntent().getIntExtra("expenseId", -1);
+
+        if (expenseId != -1) {
+            Expense expense = dbHelper.getExpenseById(expenseId);
+            if (expense != null) {
+                edtTitle.setText(expense.title);
+                edtCategory.setText(expense.category);
+                edtAmount.setText(String.valueOf(expense.amount));
+            }
+        }
+
         Button btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(v -> {
             String title = edtTitle.getText().toString().trim();
             String category = edtCategory.getText().toString().trim();
             String amountStr = edtAmount.getText().toString().trim();
 
-            // Validate inputs are not empty
             if (title.isEmpty()) {
                 Toast.makeText(this, "Please enter the title", Toast.LENGTH_SHORT).show();
                 return;
@@ -40,9 +51,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please enter the amount", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             double amount;
-            // Validate amount is a valid double
             try {
                 amount = Double.parseDouble(amountStr);
             } catch (NumberFormatException e) {
@@ -50,13 +59,14 @@ public class AddExpenseActivity extends AppCompatActivity {
                 return;
             }
 
-            // Insert the expense into the database
-            dbHelper.insertExpense(title, category, amount);
+            if (expenseId == -1) {
+                dbHelper.insertExpense(title, category, amount);
+                Toast.makeText(this, "Expense added", Toast.LENGTH_SHORT).show();
+            } else {
+                dbHelper.updateExpense(expenseId, title, category, amount);
+                Toast.makeText(this, "Expense updated", Toast.LENGTH_SHORT).show();
+            }
 
-            // Optionally notify user
-            Toast.makeText(this, "Expense saved", Toast.LENGTH_SHORT).show();
-
-            // Close this activity and return to previous screen
             finish();
         });
     }

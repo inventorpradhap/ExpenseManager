@@ -1,20 +1,23 @@
 package com.example.expenser;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ExpenseAdapter.OnItemClickListener {
+
     private ExpenseAdapter expenseAdapter;
     private ExpenseDatabaseHelper dbHelper;
     private ArrayList<Expense> expenseList = new ArrayList<>();
@@ -34,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements ExpenseAdapter.On
         recyclerView.setAdapter(expenseAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        loadExpenses();
-
         findViewById(R.id.btnAddExpense).setOnClickListener(v ->
             startActivity(new Intent(MainActivity.this, AddExpenseActivity.class))
         );
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements ExpenseAdapter.On
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) { filterExpenses(s.toString()); }
             @Override public void afterTextChanged(Editable s) { }
         });
+
+        loadExpenses();
     }
 
     private void loadExpenses() {
@@ -52,10 +55,10 @@ public class MainActivity extends AppCompatActivity implements ExpenseAdapter.On
         Cursor cursor = dbHelper.getAllExpenses();
         while (cursor.moveToNext()) {
             expenseList.add(new Expense(
-                cursor.getInt(cursor.getColumnIndex("id")),
-                cursor.getString(cursor.getColumnIndex("title")),
-                cursor.getString(cursor.getColumnIndex("category")),
-                cursor.getDouble(cursor.getColumnIndex("amount"))
+                cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                cursor.getString(cursor.getColumnIndexOrThrow("title")),
+                cursor.getString(cursor.getColumnIndexOrThrow("category")),
+                cursor.getDouble(cursor.getColumnIndexOrThrow("amount"))
             ));
         }
         cursor.close();
@@ -81,39 +84,22 @@ public class MainActivity extends AppCompatActivity implements ExpenseAdapter.On
 
     @Override
     public void onItemClick(Expense expense) {
-        // Handle edit - launch add/edit activity with expense id
         Intent intent = new Intent(this, AddExpenseActivity.class);
-        intent.putExtra("expense_id", expense.id);
+        intent.putExtra("expenseId", expense.id);
         startActivity(intent);
     }
 
     @Override
     public void onDeleteClick(Expense expense) {
-        dbHelper.deleteExpense(expense.id);
-        Toast.makeText(this, "Expense deleted", Toast.LENGTH_SHORT).show();
-        loadExpenses();
-    }
-
-    // Add menu option for Chart and Export
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_charts) {
-            startActivity(new Intent(this, ChartActivity.class));
-            return true;
-        } else if (item.getItemId() == R.id.menu_export) {
-            exportData();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void exportData() {
-        // Implement export CSV logic here or trigger a method in dbHelper
-        Toast.makeText(this, "Export feature coming soon!", Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Expense")
+               .setMessage("Are you sure you want to delete this expense?")
+               .setPositiveButton("Delete", (dialog, which) -> {
+                   dbHelper.deleteExpense(expense.id);
+                   Toast.makeText(this, "Expense deleted", Toast.LENGTH_SHORT).show();
+                   loadExpenses();
+               })
+               .setNegativeButton("Cancel", null)
+               .show();
     }
 }
