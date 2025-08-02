@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_charts"
+        android:title="Charts"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_export"
+        android:title="Export Data"
+        android:icon="@android:drawable/ic_menu_save"
+        android:showAsAction="ifRoom" />
+
+</menu>
