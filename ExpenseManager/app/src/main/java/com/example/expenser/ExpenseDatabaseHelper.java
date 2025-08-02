@@ -36,4 +36,11 @@ public class ExpenseDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
+	
+	public void deleteExpense(int id) {
+    SQLiteDatabase db = getWritableDatabase();
+    db.delete(TABLE_NAME, "id = ?", new String[]{String.valueOf(id)});
+    db.close();
+    }
+
 }

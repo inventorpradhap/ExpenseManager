@@ -1,6 +1,6 @@
 <resources>
     <style name="Theme.ExpenseManager" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Optional customizations -->
+        <!-- Customize your theme colors here -->
         <item name="colorPrimary">#6200EE</item>
         <item name="colorPrimaryDark">#3700B3</item>
         <item name="colorAccent">#03DAC5</item>
